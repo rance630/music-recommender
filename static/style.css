@@ -1,0 +1,106 @@
+/* Spotify 風格底色 */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #181818;
+    color: #f5f5f5;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+/* 網站標題 */
+h1 {
+    color: #1DB954;
+    margin-bottom: 30px;
+}
+
+/* 表單區塊 */
+form {
+    margin-top: 30px;
+}
+
+/* 輸入欄位 */
+input[type="text"] {
+    padding: 12px;
+    width: 280px;
+    font-size: 16px;
+    border-radius: 30px;
+    border: none;
+    outline: none;
+    text-align: center;
+}
+
+/* 按鈕設計 */
+button {
+    padding: 12px 24px;
+    background-color: #1DB954;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #1ed760;
+}
+
+/* 卡片容器 */
+ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* 每張推薦卡片 */
+li {
+    background-color: #282828;
+    margin: 15px;
+    padding: 20px;
+    width: 240px;
+    border-radius: 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+li:hover {
+    transform: scale(1.05);
+}
+
+/* 專輯封面圖 */
+img.cover {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 12px;
+}
+
+/* 播放器樣式 */
+audio {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* RWD 手機板支援 */
+@media (max-width: 600px) {
+    ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    li {
+        width: 90%;
+    }
+
+    input[type="text"] {
+        width: 90%;
+    }
+
+    button {
+        margin-top: 10px;
+    }
+}

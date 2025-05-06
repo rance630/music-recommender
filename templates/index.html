@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>音樂推薦網站</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* 淡入效果 */
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-dark text-white">
+    <div class="container text-center mt-5 fade-in">
+        <h1 class="text-success mb-4">🎵 音樂推薦網站</h1>
+        <form action="/recommend" method="POST" class="d-flex flex-column align-items-center">
+            <input type="text" name="query" class="form-control w-50 mb-3" placeholder="輸入你喜歡的歌手或歌曲test...">
+            
+            <select name="emotion" class="form-select w-50 mb-3">
+                <option value="">選擇你的心情（可選）</option>
+                <option value="anger">🔥 憤怒</option>
+                <option value="joy">🌻 喜悅</option>
+                <option value="love">🌸 戀愛</option>
+                <option value="saddness">💧 憂傷</option>
+                <option value="lofi">🌌 放鬆</option>
+                <option value="chillwave">🫧 夢幻懷舊</option>
+            </select>
+
+            <select name="genre" class="form-select w-50 mb-3">
+                <option value="">選擇你的曲風（可選）</option>
+                <option value="Country">🍁 鄉村</option>
+                <option value="Folk"> 🧺 民謠</option>
+                <option value="Metal">♠️ 金屬</option>
+                <option value="Rap">🕶️ 饒舌</option>
+                <option value="Rock">🎸 搖滾</option>
+                <option value="Pop">🎤 流行音樂</option>
+                <option value="Jazz">🎷 爵士</option>
+                <option value="Electronic">🎧 電子</option>
+                <option value="Hip_Hop">🧢 嘻哈</option>
+                <option value="Classical">🎻 古典</option>
+                <option value="Soundtrack">🎼 無伴奏音樂</option>
+            </select>
+
+            <button type="submit" class="btn btn-light">推薦給我</button>
+        </form>
+
+        <div class="mt-4">
+            <a href="/top" class="btn btn-light">📊 查看熱門排行榜</a>
+            <a href="/random" class="btn btn-light">🎲 隨機推薦</a>
+        </div>
+    </div>
+</body>
+</html>
