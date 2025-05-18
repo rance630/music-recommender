@@ -1,82 +1,287 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>WSP ChatBot</title>
-		<link
-			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" />
-		<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-		<style>
-			#response {
-				margin-top: 20px;
-				padding: 10px;
-				min-height: 50px;
-			}
-			#response h3 {
-				color: #333;
-				font-size: 1.2em;
-			}
-			#response strong {
-				color: #d9534f;
-			}
-			#response ul {
-				padding-left: 20px;
-			}
-			#response li {
-				margin-bottom: 5px;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="container">
-			<h2>Free ChatBot</h2>
-			<div class="form-group">
-				<input
-					type="text"
-					class="form-control"
-					id="userInput"
-					placeholder="Enter your question" />
-			</div>
-			<button class="btn btn-success" onclick="sendMessage()">Ask!</button>
-			<div id="response"></div>
-		</div>
-		<script>
-			async function sendMessage() {
-				const input = document.getElementById('userInput').value;
-				const responseDiv = document.getElementById('response');
-				if (!input) {
-					responseDiv.innerHTML = 'Please enter a message.';
-					return;
-				}
-				responseDiv.innerHTML = 'Loading...';
-				try {
-					const response = await fetch(
-						'https://openrouter.ai/api/v1/chat/completions',
-						{
-							method: 'POST',
-							headers: {
-								Authorization: 'Bearer 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',
-								'HTTP-Referer': 'https://www.sitename.com',
-								'X-Title': 'SiteName',
-								'Content-Type': 'application/json',
-							},
-							body: JSON.stringify({
-								model: 'deepseek/deepseek-r1:free',
-								messages: [{ role: 'user', content: input }],
-							}),
-						},
-					);
-					const data = await response.json();
-					console.log(data);
-					const markdownText =
-						data.choices?.[0]?.message?.content || 'No response received.';
-					responseDiv.innerHTML = marked.parse(markdownText);
-				} catch (error) {
-					responseDiv.innerHTML = 'Error: ' + error.message;
-				}
-			}
-		</script>
-	</body>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8" />
+    <title>音樂推薦 + 聊天機器人</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #1e1e2f;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chatbox {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #2c2c3e;
+            border-radius: 10px;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 80%;
+            line-height: 1.4;
+        }
+
+        .you {
+            background-color: #4a90e2;
+            align-self: flex-end;
+            color: white;
+            border-radius: 15px 5px 15px 15px;
+            margin-left: auto;
+        }
+
+        .bot {
+            background-color: #3a3a4e;
+            color: #ddd;
+            border-radius: 5px 15px 15px 15px;
+            margin-right: auto;
+        }
+
+        .chat-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        input[type="text"] {
+            border-radius: 20px;
+        }
+
+        button[type="submit"] {
+            border-radius: 20px;
+        }
+
+        h1.title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #6cd4ff;
+        }
+
+        .form-select, .form-control {
+            border-radius: 10px;
+        }
+
+        #chat-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #4a90e2;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+
+        #chat-icon:hover {
+            transform: scale(1.1);
+        }
+
+        #chat-container {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 90vw; 
+            max-width: 400px; 
+            background-color: #2c2c3e;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            display: none;
+            flex-direction: column;
+            height: auto; 
+            max-height: 80vh; 
+            overflow: hidden; 
+            z-index: 999;
+        }
+
+        #chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: #242435;
+            border-radius: 10px 10px 0 0;
+        }
+
+        #chat-header h4 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        #close-chat {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        #chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+            max-height: calc(80vh - 120px);
+        }
+
+        #chat-form {
+            display: flex;
+            padding: 10px;
+            background-color: #1e1e2f;
+        }
+
+        #user-input {
+            flex-grow: 1;
+            border-radius: 20px;
+            padding: 8px 15px;
+        }
+
+        #send-btn {
+            margin-left: 10px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Main Content -->
+<div class="container text-center mt-5 fade-in">
+    <h1 class="title mb-4">🎵 音樂推薦器</h1>
+
+    <form action="/recommend" method="POST" class="d-flex flex-column align-items-center">
+        <input type="text" name="query" class="form-control w-50 mb-3" placeholder="輸入你喜歡的歌手或歌曲...">
+
+        <select name="emotion" class="form-select w-50 mb-3">
+            <option value="">選擇心情（可選）</option>
+            <option value="anger">🔥 生氣</option>
+            <option value="joy">🌻 快樂</option>
+            <option value="love">🌸 愛情</option>
+            <option value="sadness">💧 傷心</option>
+            <option value="lofi">🌌 放鬆</option>
+            <option value="chillwave">🫧 夢幻</option>
+        </select>
+
+        <select name="genre" class="form-select w-50 mb-3">
+            <option value="">選擇類型（可選）</option>
+            <option value="Country">🍁 鄉村</option>
+            <option value="Folk">🧺 民謠</option>
+            <option value="Metal">♠️ 金屬</option>
+            <option value="Rap">🕶️ 嘻哈</option>
+            <option value="Rock">🎸 搖滾</option>
+            <option value="Pop">🎤 流行</option>
+            <option value="Jazz">🎷 爵士</option>
+            <option value="Electronic">🎧 電子</option>
+            <option value="Hip_Hop">🧢 街頭嘻哈</option>
+            <option value="Classical">🎻 古典</option>
+            <option value="Soundtrack">🎼 電影原聲</option>
+        </select>
+
+        <button type="submit" class="btn btn-light">取得推薦</button>
+    </form>
+
+    <div class="mt-4">
+        <a href="/top" class="btn btn-outline-light me-2">📊 排行榜</a>
+        <a href="/random" class="btn btn-outline-light">🎲 隨機播放</a>
+    </div>
+</div>
+
+<div id="chat-icon">💬</div>
+
+<div id="chat-container">
+    <div id="chat-header">
+        <h4>🤖 音樂聊天機器人</h4>
+        <button id="close-chat">&times;</button>
+    </div>
+    <div id="chat-messages"></div>
+    <form id="chat-form" class="chat-form">
+        <input type="text" id="user-input" class="form-control" placeholder="問任何有關音樂的問題...">
+        <button type="submit" id="send-btn" class="btn btn-success">傳送</button>
+    </form>
+</div>
+
+<script>
+    const chatIcon = document.getElementById('chat-icon');
+    const chatContainer = document.getElementById('chat-container');
+    const closeChat = document.getElementById('close-chat');
+
+    chatIcon.addEventListener('click', () => {
+        chatContainer.style.display = chatContainer.style.display === 'flex' ? 'none' : 'flex';
+    });
+
+    closeChat.addEventListener('click', () => {
+        chatContainer.style.display = 'none';
+    });
+
+    document.getElementById("chat-form").addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const input = document.getElementById("user-input");
+        const message = input.value.trim();
+        if (!message) return;
+
+        appendMessage("You", message);
+        input.value = "";
+
+        try {
+            const response = await fetch("https://openrouter.ai/api/v1/chat/completions ", {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer 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",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    model: "mistralai/mistral-7b-instruct:free",
+                    messages: [
+                        { role: "system", content: "You are a professional music assistant that can recommend songs, artists, and genres." },
+                        { role: "user", content: message }
+                    ]
+                })
+            });
+
+            const data = await response.json();
+            const botReply = data.choices[0].message.content;
+            appendMessage("Bot", botReply);
+
+        } catch (error) {
+            appendMessage("Bot", "❌ 無法取得回應。請再試一次。");
+            console.error(error);
+        }
+    });
+
+    function appendMessage(sender, message) {
+        const chatbox = document.getElementById("chat-messages");
+        const msgDiv = document.createElement("div");
+        msgDiv.className = "message " + (sender === "You" ? "you" : "bot");
+        msgDiv.innerHTML = `<strong>${sender}:</strong> ${message.replace(/\n/g, "<br>")}`;
+        chatbox.appendChild(msgDiv);
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+</script>
+
+</body>
 </html>
